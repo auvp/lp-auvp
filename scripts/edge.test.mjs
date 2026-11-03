@@ -337,3 +337,61 @@ test("wwwHostDe: só host com www liga o redirect", () => {
   assert.equal(wwwHostDe("https://auvp.com.br"), "");
   assert.equal(wwwHostDe(undefined), "");
 });
+
+// Redirect só para o próprio site: uma única barra inicial (nunca "//" nem "/\") ou o host principal.
+const mesmoSite = (loc) =>
+  /^\/(?![/\\])/.test(loc.split("?")[0]) ||
+  loc.startsWith("https://www.auvp.com.br/");
+
+const ATAQUES = [
+  "///google.com/aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9mYXZpY29uLmljbw",
+  "//google.com/x",
+  "////google.com/x",
+  "/\\google.com/x",
+  "/\\\\google.com/x",
+  "/\\/google.com/x",
+  "/.//google.com/x",
+  "/x//google.com/y",
+];
+
+test("open redirect: nenhum caminho com barras ou contrabarras leva a outro domínio", () => {
+  for (const wwwHost of [undefined, "www.auvp.com.br"]) {
+    const { request } = load(undefined, undefined, wwwHost);
+    for (const host of ["prod.auvp.com.br", "auvp.com.br", "www.auvp.com.br"]) {
+      for (const uri of ATAQUES) {
+        const r = req(uri, { qs: { utm_source: "x" } });
+        r.headers.host = { value: host };
+        const out = request(ev(r));
+        if (out.statusCode) {
+          const loc = out.headers.location.value;
+          assert.ok(mesmoSite(loc), `${host}${uri} -> ${loc}`);
+        } else {
+          assert.ok(!out.uri.startsWith("//"), `${host}${uri} -> ${out.uri}`);
+        }
+      }
+    }
+  }
+});
+
+test("open redirect: barras repetidas viram uma e o redirect de barra final fica no site", () => {
+  const { request } = load();
+  const out = request(ev(req("///google.com/x")));
+  assert.equal(out.statusCode, 301);
+  assert.equal(out.headers.location.value, "/google.com/x/");
+});
+
+test("open redirect: o vercel.json não pode apontar para fora do site", () => {
+  const redir = (destination) =>
+    redirectsFrom({
+      redirects: [{ source: "/x", destination, permanent: true }],
+    });
+  for (const d of [
+    "https://evil.com/",
+    "//evil.com",
+    "/\\evil.com",
+    "evil.com",
+    "/a b",
+  ])
+    assert.throws(() => redir(d), /próprio site|fora do site|destino/i, d);
+  assert.doesNotThrow(() => redir("/ok/"));
+});

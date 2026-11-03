@@ -16,6 +16,12 @@ export function redirectsFrom(vercel) {
   const exatos = {};
   const prefixos = {};
   for (const r of vercel.redirects ?? []) {
+    // Destino fora do site seria um open redirect: só caminho com uma barra inicial.
+    if (!/^\/(?![/\\])[^\s\\]*$/.test(r.destination)) {
+      throw new Error(
+        `Redirect "${r.source}": o destino "${r.destination}" não é um caminho do próprio site.`,
+      );
+    }
     const alvo = [r.destination, r.permanent ? 301 : 302];
     if (r.source.endsWith("/:path+") && !/[:(*]/.test(r.source.slice(0, -6))) {
       prefixos[r.source.slice(0, -6)] = alvo;

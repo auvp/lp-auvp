@@ -1,8 +1,8 @@
 function handler(event) {
   var request = event.request;
-  var uri = request.uri;
+  var uri = cleanPath(request.uri);
 
-  var toWww = wwwRedirect(request);
+  var toWww = wwwRedirect(request, uri);
   if (toWww) return toWww;
 
   var moved = redirectFor(uri, request);
