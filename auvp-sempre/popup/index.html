@@ -25,14 +25,6 @@
         height: 100%;
         border: 0;
       }
-      .previa-reabrir {
-        position: fixed;
-        right: 24px;
-        bottom: 24px;
-        z-index: 10;
-        background: var(--black);
-        color: var(--paper);
-      }
     </style>
     <script src="../popup.js" defer></script>
   </head>
@@ -42,13 +34,6 @@
       src="../"
       title="Página da AUVP Sempre, atrás do popup"
     ></iframe>
-    <button
-      class="btn btn--light previa-reabrir"
-      type="button"
-      onclick="window.popupSempre && window.popupSempre.abrir('previa')"
-    >
-      VER O POPUP DE NOVO
-    </button>
 
     <!-- ============ POPUP (este bloco vai para o index.html) ============ -->
     <dialog
@@ -58,34 +43,23 @@
       aria-describedby="popup-sempre-texto"
       data-popup-sempre-auto
     >
-      <button
-        class="popup-sempre__close"
-        type="button"
-        data-popup-fechar="x"
-        aria-label="Fechar"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          aria-hidden="true"
-        >
-          <path d="M6 6l12 12M18 6L6 18" />
-        </svg>
-      </button>
-
       <div class="popup-sempre__inner">
         <div class="popup-sempre__copy" tabindex="-1" autofocus>
-          <p class="popup-sempre__eyebrow">AINDA NÃO É ALUNO DA AUVP ESCOLA?</p>
+          <p class="popup-sempre__aviso">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="5" y="11" width="14" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+            Você ainda não está apto para esta assinatura
+          </p>
           <h2 id="popup-sempre-titulo" class="popup-sempre__title">
-            Do zero a investidor<br />
-            em 8 semanas.
+            Seu caminho começa pela Escola
           </h2>
           <p id="popup-sempre-texto" class="popup-sempre__lead">
-            A AUVP Sempre é a continuação da AUVP Escola e só fica disponível
-            para quem já é aluno. O caminho começa pela Escola.
+            A AUVP Sempre é um produto <strong>exclusivo</strong> para quem já
+            foi aluno da AUVP Escola. Com ela, você poderá continuar acessando
+            todos os benefícios e atualizações da Escola, enquanto durar sua
+            assinatura.
           </p>
         </div>
 
@@ -101,8 +75,8 @@
               <path d="M20 6 9 17l-5-5" />
             </svg>
             <span
-              ><strong>Comunidade</strong> com mais de 35 mil alunos
-              ativos</span
+              ><strong>Materiais didáticos</strong> para estudar e aprender de
+              verdade</span
             >
           </li>
           <li>
@@ -110,36 +84,49 @@
               <path d="M20 6 9 17l-5-5" />
             </svg>
             <span
-              ><strong>Aprendizado garantido</strong> ou 100% do seu dinheiro de
-              volta</span
+              ><strong>Comunidade ativa</strong> com especialistas e mais de 35
+              mil alunos ativos</span
+            >
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            <span
+              ><strong>Ferramentas práticas</strong> para facilitar seu dia a
+              dia de investidor</span
+            >
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            <span
+              ><strong>Módulos extras</strong> para ir além na
+              aprendizagem</span
             >
           </li>
         </ul>
 
-        <div class="popup-sempre__acoes">
-          <a
-            class="btn popup-sempre__cta"
-            data-popup-cta="analise-de-perfil"
-            href="https://form.auvp.com.br/to/DSo4JgH8"
-            >FAÇA SUA ANÁLISE DE PERFIL</a
-          >
-          <!-- Na prévia a raiz fica dois níveis acima; no index.html da
-               Sempre, um só: lá este href vira "../". -->
-          <a
-            class="btn btn--light"
-            data-popup-cta="conhecer-escola"
-            href="../../"
-            >CONHECER A AUVP ESCOLA</a
-          >
+        <div class="popup-sempre__chamada">
+          <p class="popup-sempre__chamada-titulo">Venha fazer parte:</p>
+          <div class="popup-sempre__acoes">
+            <a
+              class="btn popup-sempre__cta"
+              data-popup-cta="analise-de-perfil"
+              href="https://form.auvp.com.br/to/DSo4JgH8"
+              >FAÇA SUA ANÁLISE DE PERFIL</a
+            >
+            <!-- Na prévia a raiz fica dois níveis acima; no index.html da
+                 Sempre, um só: lá este href vira "../". -->
+            <a
+              class="btn btn--light"
+              data-popup-cta="conhecer-escola"
+              href="../../"
+              >CONHECER A AUVP ESCOLA</a
+            >
+          </div>
         </div>
-
-        <button
-          class="popup-sempre__dismiss"
-          type="button"
-          data-popup-fechar="ja-sou-aluno"
-        >
-          Já sou aluno da Escola, quero ver a AUVP Sempre
-        </button>
       </div>
     </dialog>
     <!-- ================================================================== -->

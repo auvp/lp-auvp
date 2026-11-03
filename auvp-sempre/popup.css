@@ -1,9 +1,10 @@
 /*
  * AUVP Sempre: popup de tela cheia que chama para a AUVP Escola.
  *
- * Usa o <dialog> nativo (aberto com showModal): o navegador cuida do foco
- * preso dentro dele, do Esc e de deixar a página de trás inerte. Este arquivo
- * só desenha. Quem abre e fecha é o popup.js. Prévia em /auvp-sempre/popup/.
+ * Usa o <dialog> nativo (aberto com showModal): o navegador prende o foco
+ * dentro dele e deixa a página de trás inerte. Não tem como fechar: quem não é
+ * aluno da Escola não segue para a assinatura (ver popup.js). Este arquivo só
+ * desenha. Prévia em /auvp-sempre/popup/.
  */
 
 .popup-sempre {
@@ -15,8 +16,17 @@
   margin: 0;
   padding: 0;
   border: 0;
-  background: var(--black) url("img/hero-desktop.webp") 100% 50% / cover
-    no-repeat;
+  /* Foto da LP da Escola (Raul na aula ao vivo), com o preto mais fechado à
+     esquerda, onde fica o texto. Caminho relativo a este arquivo: funciona na
+     raiz e sob o subcaminho do GitHub Pages. */
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.96) 0%,
+      rgba(0, 0, 0, 0.9) 45%,
+      rgba(0, 0, 0, 0.55) 100%
+    ),
+    var(--black) url("../imagens/hero-2560.webp") 75% 0 / cover no-repeat;
   color: var(--paper);
   font-family: var(--font);
   overflow-y: auto;
@@ -51,7 +61,7 @@ html.popup-sempre-aberto {
   width: min(100% - 32px, var(--container));
   min-height: 100%;
   margin-inline: auto;
-  padding-block: 88px 48px;
+  padding-block: 64px;
 }
 
 .popup-sempre__copy {
@@ -64,15 +74,35 @@ html.popup-sempre-aberto {
   outline: none;
 }
 
-.popup-sempre__eyebrow {
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 3px;
-  color: var(--yellow);
+/* O aviso é a primeira coisa a ser lida: faixa amarela cheia, com cadeado. */
+.popup-sempre__aviso {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--black);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.popup-sempre__aviso svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .popup-sempre__title {
-  margin-top: 16px;
+  margin-top: 24px;
   font-size: 44px;
   font-weight: 400;
   line-height: 1.05;
@@ -84,6 +114,12 @@ html.popup-sempre-aberto {
   font-weight: 300;
   line-height: 1.5;
   color: #d6d6d6;
+}
+
+.popup-sempre__lead strong {
+  font-weight: 600;
+  color: var(--paper);
+  text-transform: uppercase;
 }
 
 /* ----------------------------------------------------- o que tem na Escola */
@@ -125,6 +161,12 @@ html.popup-sempre-aberto {
 
 /* ---------------------------------------------------------------- botões */
 
+.popup-sempre__chamada-titulo {
+  margin-bottom: 14px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
 .popup-sempre__acoes {
   display: flex;
   flex-wrap: wrap;
@@ -142,65 +184,26 @@ html.popup-sempre-aberto {
   background: var(--paper);
 }
 
-/* ---------------------------------------------------------- já sou aluno */
-
-.popup-sempre__dismiss {
-  align-self: flex-start;
-  padding: 8px 0;
-  border: 0;
-  background: none;
-  color: var(--paper);
-  font: inherit;
-  font-size: 15px;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  cursor: pointer;
-}
-
-.popup-sempre__close {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.4);
-  color: var(--paper);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.popup-sempre__close:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.popup-sempre__close svg {
-  width: 20px;
-  height: 20px;
-}
-
 /* ---------------------------------------------------------------- celular */
 
 @media (max-width: 767px) {
   .popup-sempre {
     background-image:
-      linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
-      url("img/hero-mobile.webp");
+      linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.94)),
+      url("../imagens/hero-1440.webp");
     background-position: 50% 0;
   }
 
   .popup-sempre__inner {
     justify-content: flex-start;
     gap: 24px;
-    padding-block: 80px 32px;
+    padding-block: 32px;
   }
 
-  .popup-sempre__eyebrow {
+  .popup-sempre__aviso {
+    padding: 9px 14px;
     font-size: 12px;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
   }
 
   .popup-sempre__title {
@@ -218,14 +221,6 @@ html.popup-sempre-aberto {
   .popup-sempre__acoes .btn {
     flex: 1 1 100%;
     padding-inline: 16px;
-  }
-
-  /* No celular o conteúdo rola; preso no canto, o X ficaria por cima do
-     título. Ele sobe junto, e o "Agora não" fecha no fim da rolagem. */
-  .popup-sempre__close {
-    position: absolute;
-    top: 14px;
-    right: 14px;
   }
 }
 
