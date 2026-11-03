@@ -100,6 +100,27 @@ body {
 }
 h1, h2, h3, h4, h5, p { margin: 0; }
 h1, h2, h3, h4 { font-family: var(--font-title) !important; }
+
+/* Sem palavra órfã (regra do repositório, ver CONTRIBUTING.md): título
+   divide as linhas por igual e texto corrido não termina com uma palavra
+   sozinha na última linha. O build falha se uma página ficar sem isto. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p,
+li,
+blockquote,
+figcaption,
+dd,
+dt {
+  text-wrap: pretty;
+}
 img, picture, svg, video, iframe { display: block; max-width: 100%; border-radius: 0 !important; }
 
 /* =========================================
