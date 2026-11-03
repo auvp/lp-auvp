@@ -1,27 +1,27 @@
 /*
  * AUVP Sempre: popup de tela cheia que chama para a AUVP Escola.
  *
- * A Sempre só é vendida para quem já é aluno da Escola. Quem chega na página
- * sem ser aluno recebe o popup com o caminho certo: a Escola. Quem já é aluno
- * fecha pelo "Já sou aluno" e segue na página.
+ * A Sempre é exclusiva para quem já foi aluno da Escola. Quem chega a um dos
+ * pontos marcados da página recebe o popup, que leva para a Escola e não tem
+ * como ser fechado: sem X, sem "já sou aluno" e sem Esc. Quem não é aluno não
+ * deve voltar para a página da assinatura.
  *
  * Gatilhos:
  * - Qualquer elemento com `data-popup-sempre-gatilho="<nome>"` abre o popup
- *   quando metade dele aparece na tela. O nome vai para o GTM, para saber qual
- *   ponto da página converteu.
- * - O popup aparece uma vez por sessão do navegador (sessionStorage). Fechou,
- *   não volta até a pessoa abrir o site de novo.
- * - `data-popup-sempre-auto` no <dialog> abre assim que a página carrega e
- *   ignora o limite da sessão. Só a prévia (/auvp-sempre/popup/) usa.
+ *   quando metade dele aparece na tela. O nome vai para o GTM, para saber em
+ *   qual ponto da página a pessoa foi barrada.
+ * - Abre sempre que a pessoa chega a um gatilho, inclusive depois de
+ *   recarregar a página.
+ * - `data-popup-sempre-auto` no <dialog> abre assim que a página carrega. Só a
+ *   prévia (/auvp-sempre/popup/) usa.
  *
- * Eventos no dataLayer: popup_sempre_aberto, popup_sempre_clique e
- * popup_sempre_fechado, todos com `popup_gatilho`.
+ * Eventos no dataLayer: popup_sempre_aberto e popup_sempre_clique (com
+ * `popup_cta`), os dois com `popup_gatilho`.
  */
 (function () {
   var dialog = document.getElementById("popup-sempre");
   if (!dialog || typeof dialog.showModal !== "function") return;
 
-  var CHAVE = "auvp-sempre-popup-visto";
   var gatilhoAtual = "";
 
   function registrar(evento, extra) {
@@ -31,52 +31,28 @@
     window.dataLayer.push(dados);
   }
 
-  function jaVisto() {
-    try {
-      return sessionStorage.getItem(CHAVE) === "1";
-    } catch (e) {
-      return false;
-    }
-  }
-
-  function marcarVisto() {
-    try {
-      sessionStorage.setItem(CHAVE, "1");
-    } catch (e) {
-      /* navegação privada sem storage: o popup só não fica lembrado */
-    }
-  }
-
   function abrir(gatilho) {
     if (dialog.open) return;
     gatilhoAtual = gatilho || "manual";
-    dialog.returnValue = "";
     document.documentElement.classList.add("popup-sempre-aberto");
     dialog.showModal();
-    marcarVisto();
     registrar("popup_sempre_aberto");
   }
 
-  function fechar(motivo) {
-    if (!dialog.open) return;
-    dialog.close(motivo || "botao");
-  }
+  window.popupSempre = { abrir: abrir };
 
+  // Esc não fecha.
+  dialog.addEventListener("cancel", function (event) {
+    event.preventDefault();
+  });
+
+  // Se o navegador fechar mesmo assim (alguns forçam o fechamento depois de
+  // vários Esc seguidos), o popup volta.
   dialog.addEventListener("close", function () {
-    document.documentElement.classList.remove("popup-sempre-aberto");
-    registrar("popup_sempre_fechado", {
-      popup_motivo: dialog.returnValue || "esc",
-    });
+    dialog.showModal();
   });
 
   dialog.addEventListener("click", function (event) {
-    // Clique fora do conteúdo não fecha: o popup ocupa a tela inteira e um
-    // toque no fundo seria acidental. Fecha pelo X, pelo "Agora não" ou Esc.
-    var fecha = event.target.closest("[data-popup-fechar]");
-    if (fecha) {
-      fechar(fecha.getAttribute("data-popup-fechar"));
-      return;
-    }
     var cta = event.target.closest("[data-popup-cta]");
     if (cta) {
       registrar("popup_sempre_clique", {
@@ -85,26 +61,26 @@
     }
   });
 
-  var auto = dialog.hasAttribute("data-popup-sempre-auto");
-  if (auto) abrir("previa");
-
-  var gatilhos = document.querySelectorAll("[data-popup-sempre-gatilho]");
-  if (!auto && gatilhos.length && "IntersectionObserver" in window) {
-    var observador = new IntersectionObserver(
-      function (entradas) {
-        for (var i = 0; i < entradas.length; i++) {
-          if (!entradas[i].isIntersecting || jaVisto()) continue;
-          observador.disconnect();
-          abrir(entradas[i].target.getAttribute("data-popup-sempre-gatilho"));
-          return;
-        }
-      },
-      { threshold: 0.5 },
-    );
-    gatilhos.forEach(function (el) {
-      observador.observe(el);
-    });
+  if (dialog.hasAttribute("data-popup-sempre-auto")) {
+    abrir("previa");
+    return;
   }
 
-  window.popupSempre = { abrir: abrir, fechar: fechar };
+  var gatilhos = document.querySelectorAll("[data-popup-sempre-gatilho]");
+  if (!gatilhos.length || !("IntersectionObserver" in window)) return;
+
+  var observador = new IntersectionObserver(
+    function (entradas) {
+      for (var i = 0; i < entradas.length; i++) {
+        if (!entradas[i].isIntersecting) continue;
+        observador.disconnect();
+        abrir(entradas[i].target.getAttribute("data-popup-sempre-gatilho"));
+        return;
+      }
+    },
+    { threshold: 0.5 },
+  );
+  gatilhos.forEach(function (el) {
+    observador.observe(el);
+  });
 })();
