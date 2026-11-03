@@ -31,11 +31,130 @@
     window.dataLayer.push(dados);
   }
 
+  /*
+   * Carrossel dos tópicos da Escola: setas, pontos, arrastar no celular
+   * (scroll-snap nativo) e avanço sozinho a cada 4 s. O avanço para de vez
+   * quando a pessoa toca, clica ou usa o teclado nele, e nem começa para quem
+   * pediu menos movimento no sistema.
+   */
+  function iniciarCarrossel(raiz) {
+    var trilha = raiz.querySelector("[data-carrossel-trilha]");
+    var pontos = raiz.querySelector("[data-carrossel-pontos]");
+    if (!trilha || !trilha.children.length) return function () {};
+    var itens = trilha.children;
+
+    /*
+     * Paradas: as posições de rolagem em que um cartão encosta na esquerda.
+     * Os últimos cartões não chegam lá (a trilha acaba antes), então viram
+     * uma parada só, a do fim. Um ponto por parada: no desktop, com dois
+     * cartões e meio à vista, são menos pontos que cartões.
+     */
+    function paradas() {
+      var max = trilha.scrollWidth - trilha.clientWidth;
+      var lista = [];
+      for (var i = 0; i < itens.length; i++) {
+        var x = Math.min(itens[i].offsetLeft - itens[0].offsetLeft, max);
+        if (!lista.length || x - lista[lista.length - 1] > 2) lista.push(x);
+      }
+      return lista;
+    }
+
+    function atual(lista) {
+      var x = trilha.scrollLeft;
+      var melhor = 0;
+      for (var i = 1; i < lista.length; i++) {
+        if (Math.abs(lista[i] - x) < Math.abs(lista[melhor] - x)) melhor = i;
+      }
+      return melhor;
+    }
+
+    // Refaz os pontos quando o número de paradas muda (popup abrindo,
+    // celular girando).
+    function marcar() {
+      var lista = paradas();
+      if (pontos.children.length !== lista.length) {
+        pontos.textContent = "";
+        lista.forEach(function (_, i) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.setAttribute(
+            "aria-label",
+            "Ir para o grupo " + (i + 1) + " de " + lista.length,
+          );
+          b.addEventListener("click", function () {
+            irPara(i, true);
+          });
+          pontos.appendChild(b);
+        });
+      }
+      var n = atual(lista);
+      for (var i = 0; i < pontos.children.length; i++) {
+        pontos.children[i].setAttribute(
+          "aria-current",
+          i === n ? "true" : "false",
+        );
+      }
+    }
+
+    // Do fim volta para o começo, e do começo vai para o fim.
+    function irPara(n, daPessoa) {
+      if (daPessoa) parar();
+      var lista = paradas();
+      trilha.scrollTo({ left: lista[(n + lista.length) % lista.length] });
+    }
+
+    function passo(delta) {
+      return function () {
+        irPara(atual(paradas()) + delta, true);
+      };
+    }
+    raiz
+      .querySelector("[data-carrossel-anterior]")
+      .addEventListener("click", passo(-1));
+    raiz
+      .querySelector("[data-carrossel-proximo]")
+      .addEventListener("click", passo(1));
+
+    var espera;
+    trilha.addEventListener("scroll", function () {
+      clearTimeout(espera);
+      espera = setTimeout(marcar, 60);
+    });
+    window.addEventListener("resize", marcar);
+    ["pointerdown", "wheel", "keydown", "focusin"].forEach(function (ev) {
+      raiz.addEventListener(ev, parar, { passive: true });
+    });
+
+    var relogio = null;
+    function parar() {
+      clearInterval(relogio);
+      relogio = null;
+    }
+
+    // Chamada quando o popup abre: com ele visível, as medidas existem.
+    return function comecar() {
+      marcar();
+      var menosMovimento = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      if (relogio || menosMovimento) return;
+      relogio = setInterval(function () {
+        irPara(atual(paradas()) + 1, false);
+      }, 4000);
+    };
+  }
+
+  var carrossel = dialog.querySelector("[data-carrossel]");
+  var comecarCarrossel = carrossel
+    ? iniciarCarrossel(carrossel)
+    : function () {};
+
   function abrir(gatilho) {
     if (dialog.open) return;
     gatilhoAtual = gatilho || "manual";
     document.documentElement.classList.add("popup-sempre-aberto");
     dialog.showModal();
+    comecarCarrossel();
     registrar("popup_sempre_aberto");
   }
 
