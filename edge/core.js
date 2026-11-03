@@ -53,7 +53,22 @@ function queryString(request) {
   return parts.length ? "?" + parts.join("&") : "";
 }
 
+// "\" vira "/" e barras repetidas viram uma só: o navegador lê "//host/..." (e "/\host/...")
+// como outro site, e o redirect de barra final repete o caminho recebido.
+function cleanPath(uri) {
+  return uri.replace(/\\/g, "/").replace(/\/{2,}/g, "/");
+}
+
+// Só se redireciona para o próprio site: caminho com UMA barra inicial ou o host principal.
+function sameSite(location) {
+  var path = location.split("?")[0];
+  if (/[\x00-\x20\\]/.test(path)) return false;
+  if (path.charAt(0) === "/") return path.charAt(1) !== "/";
+  return !!WWW_HOST && path.indexOf("https://" + WWW_HOST + "/") === 0;
+}
+
 function redirect(location, status) {
+  if (!sameSite(location)) location = "/";
   var permanent = status !== 302;
   return {
     statusCode: permanent ? 301 : 302,
@@ -64,10 +79,10 @@ function redirect(location, status) {
 
 // Endereço sem www (auvp.com.br) vai para o principal (www.auvp.com.br), mantendo caminho e query.
 // WWW_HOST vazio desliga o redirect. Outros hosts (prod.*, *.cloudfront.net) passam intactos.
-function wwwRedirect(request) {
+function wwwRedirect(request, uri) {
   var h = request.headers.host;
   if (!WWW_HOST || !h || h.value !== WWW_HOST.slice(4)) return null;
-  return redirect("https://" + WWW_HOST + request.uri + queryString(request));
+  return redirect("https://" + WWW_HOST + uri + queryString(request));
 }
 
 // REDIRECTS: caminho exato -> [destino, status].
