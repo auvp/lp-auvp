@@ -4,6 +4,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
 ## [Não publicado]
 
+### Sem palavra órfã (nov/2026)
+
+- **Regra do repositório:** títulos com `text-wrap: balance` e texto corrido
+  com `text-wrap: pretty` no CSS de base de todas as partes do site. O
+  `npm run build` falha se alguma página publicada ficar sem a regra. Ver
+  CONTRIBUTING.md.
+
 ### Novas páginas (out/2026)
 
 - **`/wpp/`**: cópia da LP da Escola montada pelo build. Em dia útil, o

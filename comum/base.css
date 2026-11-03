@@ -45,6 +45,27 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Sem palavra órfã (regra do repositório, ver CONTRIBUTING.md): título
+   divide as linhas por igual e texto corrido não termina com uma palavra
+   sozinha na última linha. O build falha se uma página ficar sem isto. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p,
+li,
+blockquote,
+figcaption,
+dd,
+dt {
+  text-wrap: pretty;
+}
+
 img,
 video {
   display: block;

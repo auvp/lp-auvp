@@ -42,6 +42,7 @@ import path from "node:path";
 import process from "node:process";
 import { injectDir } from "./lib/snippets.mjs";
 import { arquivosSeo } from "./lib/seo.mjs";
+import { verificarOrfas } from "./lib/tipografia.mjs";
 import {
   canonical,
   validarExperimentos,
@@ -166,6 +167,10 @@ await writeFile(
     <title>AUVP Escola</title>
     <meta name="robots" content="noindex" />
     <meta http-equiv="refresh" content="0; url=../" />
+    <style>
+      p { text-wrap: pretty; }
+      h1 { text-wrap: balance; }
+    </style>
     <script>location.replace("../" + location.search + location.hash);</script>
   </head>
   <body>
@@ -273,6 +278,15 @@ console.log(
 
 const errosDoSite = await validarSite(dist, experimentos);
 if (errosDoSite.length) falhar("Testes A/B com problema:", errosDoSite);
+
+// Regra do repositório: nenhuma página com palavra órfã. Ver CONTRIBUTING.md.
+const semRegraDeOrfas = await verificarOrfas(dist, base);
+if (semRegraDeOrfas.length) {
+  falhar(
+    "Páginas sem a regra de palavra órfã (text-wrap). Ver CONTRIBUTING.md:",
+    semRegraDeOrfas,
+  );
+}
 if (experimentos.tests.length) {
   console.log(
     `testes A/B ligados: ${experimentos.tests.map((t) => `${t.id} (${t.page})`).join(", ")}`,
