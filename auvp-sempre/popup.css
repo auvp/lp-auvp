@@ -129,31 +129,110 @@ html.popup-sempre-aberto {
 
 /* ----------------------------------------------------- o que tem na Escola */
 
-/* Cada item é um cartão com ícone próprio ao lado do texto (nunca em cima):
-   o nome em destaque e a explicação logo abaixo. Dois por linha no desktop,
-   o último ocupando a linha inteira; um por linha no celular. */
-.popup-sempre__pontos {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  /* Mesma largura do texto: os cartões não avançam sobre o Raul. */
+/* Os tópicos da Escola num carrossel: dois cartões à vista no desktop (e a
+   borda do terceiro, para mostrar que há mais), um no celular. Cada cartão
+   tem o ícone do assunto ao lado do texto, nunca em cima. Avança sozinho a
+   cada poucos segundos e para quando a pessoa interage (popup.js). */
+.popup-carrossel {
   max-width: 560px;
+}
+
+.popup-carrossel__trilha {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 12px) / 2.15);
+  gap: 12px;
+  margin: 0;
   padding: 0;
   list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.popup-carrossel__trilha::-webkit-scrollbar {
+  display: none;
 }
 
 .popup-sempre__pontos li {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 14px 16px;
+  min-height: 96px;
+  padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.06);
+  scroll-snap-align: start;
 }
 
-.popup-sempre__pontos li:last-child:nth-child(odd) {
-  grid-column: 1 / -1;
+.popup-carrossel__controles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.popup-carrossel__pontos {
+  display: flex;
+  gap: 6px;
+}
+
+.popup-carrossel__pontos button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.popup-carrossel__pontos button[aria-current="true"] {
+  width: 24px;
+  background: var(--yellow);
+}
+
+.popup-carrossel__setas {
+  display: flex;
+  gap: 8px;
+}
+
+.popup-carrossel__setas button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--paper);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.popup-carrossel__setas button:hover {
+  border-color: var(--yellow);
+  background: rgba(225, 189, 88, 0.15);
+}
+
+.popup-carrossel__setas svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .popup-sempre__pontos svg {
@@ -269,8 +348,8 @@ html.popup-sempre-aberto {
     font-size: 17px;
   }
 
-  .popup-sempre__pontos {
-    grid-template-columns: 1fr;
+  .popup-carrossel__trilha {
+    grid-auto-columns: 86%;
     gap: 10px;
   }
 
@@ -293,5 +372,9 @@ html.popup-sempre-aberto {
 @media (prefers-reduced-motion: reduce) {
   .popup-sempre[open] {
     animation: none;
+  }
+
+  .popup-carrossel__trilha {
+    scroll-behavior: auto;
   }
 }
