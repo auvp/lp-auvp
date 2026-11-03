@@ -33,7 +33,7 @@
 
   /*
    * Carrossel dos tópicos da Escola: setas, pontos, arrastar no celular
-   * (scroll-snap nativo) e avanço sozinho a cada 4 s. O avanço para de vez
+   * (scroll-snap nativo) e avanço sozinho a cada 2,5 s. O avanço para de vez
    * quando a pessoa toca, clica ou usa o teclado nele, e nem começa para quem
    * pediu menos movimento no sistema.
    */
@@ -140,7 +140,7 @@
       if (relogio || menosMovimento) return;
       relogio = setInterval(function () {
         irPara(atual(paradas()) + 1, false);
-      }, 4000);
+      }, 2500);
     };
   }
 
