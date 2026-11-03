@@ -129,38 +129,59 @@ html.popup-sempre-aberto {
 
 /* ----------------------------------------------------- o que tem na Escola */
 
+/* Cada item é um cartão com ícone próprio ao lado do texto (nunca em cima):
+   o nome em destaque e a explicação logo abaixo. Dois por linha no desktop,
+   o último ocupando a linha inteira; um por linha no celular. */
 .popup-sempre__pontos {
   display: grid;
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  /* Mesma largura do texto: os cartões não avançam sobre o Raul. */
+  max-width: 560px;
   padding: 0;
   list-style: none;
 }
 
-/* Ícone ao lado do texto, nunca em cima. */
 .popup-sempre__pontos li {
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: 18px;
-  color: #e4e4e4;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.popup-sempre__pontos li:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .popup-sempre__pontos svg {
   flex: none;
-  width: 32px;
-  height: 32px;
-  padding: 7px;
-  border-radius: 50%;
-  background: var(--yellow);
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(225, 189, 88, 0.14);
   fill: none;
-  stroke: var(--black);
-  stroke-width: 2.4;
+  stroke: var(--yellow);
+  stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
+.popup-sempre__pontos p {
+  display: grid;
+  gap: 2px;
+  font-size: 14px;
+  line-height: 1.35;
+  color: #bdbdbd;
+}
+
 .popup-sempre__pontos strong {
+  font-size: 17px;
   font-weight: 600;
+  line-height: 1.2;
   color: var(--paper);
 }
 
@@ -248,8 +269,19 @@ html.popup-sempre-aberto {
     font-size: 17px;
   }
 
+  .popup-sempre__pontos {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
   .popup-sempre__pontos li {
-    font-size: 16px;
+    padding: 12px 14px;
+  }
+
+  .popup-sempre__pontos svg {
+    width: 40px;
+    height: 40px;
+    padding: 9px;
   }
 
   .popup-sempre__acoes .btn {
