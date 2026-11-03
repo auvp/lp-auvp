@@ -16,13 +16,22 @@
   margin: 0;
   padding: 0;
   border: 0;
-  /* Foto da LP da Escola (Raul na aula ao vivo), recortada nele e presa à
-     direita, na altura da tela. O texto fica à esquerda, no preto. A borda
-     esquerda da foto já vem esfumada em preto no próprio arquivo, então não
-     aparece emenda em nenhuma largura de tela. Até 1199px não há espaço lado
-     a lado, e a foto vira fundo escurecido (bloco de mídia no fim). */
-  background: var(--black) url("img/popup-escola-raul.webp") right top / auto
-    100% no-repeat;
+  /* Foto da LP da Escola (Raul na aula ao vivo), ampliada: ocupa a altura da
+     tela e quase toda a largura, presa à direita, com o Raul do lado oposto
+     ao texto. O escurecimento é só onde o texto fica (à esquerda) e some
+     antes do Raul. A borda esquerda da foto já vem esfumada no arquivo, então
+     não aparece emenda. Até 1199px a foto vira uma faixa no topo (fim do
+     arquivo). */
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.78) 34%,
+      rgba(0, 0, 0, 0.2) 52%,
+      rgba(0, 0, 0, 0) 64%
+    ),
+    var(--black) url("img/popup-escola-raul-largo.webp") right top / auto 100%
+      no-repeat;
   color: var(--paper);
   font-family: var(--font);
   overflow-y: auto;
@@ -61,7 +70,7 @@ html.popup-sempre-aberto {
 }
 
 .popup-sempre__copy {
-  max-width: 600px;
+  max-width: 560px;
 }
 
 /* Recebe o foco quando o popup abre (autofocus), para o leitor de tela
@@ -180,24 +189,49 @@ html.popup-sempre-aberto {
   background: var(--paper);
 }
 
-/* -------------------------------------------- tablet e notebook pequeno */
+/* ------------------------------------------- celular, tablet e notebook */
 
+/* Sem espaço para texto e foto lado a lado: a foto vira uma faixa no topo,
+   que desce para o preto, e o texto começa já sobre a parte escura. */
 @media (max-width: 1199px) {
   .popup-sempre {
     background:
-      linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.94)),
-      url("../imagens/hero-1440.webp") 50% 0 / cover no-repeat,
-      var(--black);
+      linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0.15) 22vh,
+        rgba(0, 0, 0, 0.85) 40vh,
+        var(--black) 52vh
+      ),
+      var(--black) url("img/popup-escola-raul-largo.webp") 50% 0 / 100% auto
+        no-repeat;
+  }
+
+  .popup-sempre__inner {
+    justify-content: flex-start;
+    padding-top: 34vh;
   }
 }
 
 /* ---------------------------------------------------------------- celular */
 
 @media (max-width: 767px) {
+  /* Na tela em pé, o recorte vertical, com o Raul centralizado. */
+  .popup-sempre {
+    background-image:
+      linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0.15) 22vh,
+        rgba(0, 0, 0, 0.85) 40vh,
+        var(--black) 52vh
+      ),
+      url("img/popup-escola-raul.webp");
+  }
+
   .popup-sempre__inner {
-    justify-content: flex-start;
     gap: 24px;
-    padding-block: 32px;
+    padding-bottom: 32px;
   }
 
   .popup-sempre__aviso {
