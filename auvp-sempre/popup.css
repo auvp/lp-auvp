@@ -313,6 +313,27 @@ html.popup-sempre-aberto {
   }
 }
 
+/* ------------------------------------------------------- letra miúda */
+
+/* Mesmo jeito dos links do rodapé da institucional ("Termos de uso"):
+   pequeno, cinza claro e sublinhado. */
+.popup-sempre__rodape {
+  font-size: 14px;
+}
+
+.popup-sempre__rodape a {
+  color: #c4c4c4;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.45);
+  text-underline-offset: 4px;
+  transition: color 0.2s ease;
+}
+
+.popup-sempre__rodape a:hover {
+  color: var(--paper);
+  text-decoration-color: currentColor;
+}
+
 /* ---------------------------------------------------------------- celular */
 
 @media (max-width: 767px) {
