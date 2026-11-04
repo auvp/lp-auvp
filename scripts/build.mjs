@@ -68,10 +68,7 @@ const siteUrl = (
  * Encerrar um desses testes é apagar a linha daqui e o teste do
  * experiments.json, no mesmo PR.
  */
-const versoesMontadas = {
-  // Teste "escola-institucional": a LP da Escola (A) contra a institucional (B).
-  "/": "institucional",
-};
+const versoesMontadas = {};
 
 function falhar(titulo, erros) {
   console.error(`\n${titulo}\n${erros.map((e) => `  - ${e}`).join("\n")}\n`);
