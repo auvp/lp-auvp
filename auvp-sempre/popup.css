@@ -58,7 +58,11 @@ html.popup-sempre-aberto {
   overflow: hidden;
 }
 
+/* Uma coluna só, de uma largura só: texto, carrossel e botões começam e
+   terminam na mesma linha. Sem isso o carrossel acabava antes dos botões e
+   formava uma escada. */
 .popup-sempre__inner {
+  --coluna: 600px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -70,7 +74,7 @@ html.popup-sempre-aberto {
 }
 
 .popup-sempre__copy {
-  max-width: 560px;
+  max-width: var(--coluna);
 }
 
 /* Recebe o foco quando o popup abre (autofocus), para o leitor de tela
@@ -134,7 +138,7 @@ html.popup-sempre-aberto {
    tem o ícone do assunto ao lado do texto, nunca em cima. Avança sozinho a
    cada poucos segundos e para quando a pessoa interage (popup.js). */
 .popup-carrossel {
-  max-width: 560px;
+  max-width: var(--coluna);
 }
 
 .popup-carrossel__trilha {
@@ -276,6 +280,13 @@ html.popup-sempre-aberto {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  max-width: var(--coluna);
+}
+
+/* Os dois botões dividem a coluna por igual. */
+.popup-sempre__acoes .btn {
+  flex: 1 1 0;
+  padding-inline: 16px;
 }
 
 .popup-sempre__cta {
@@ -311,6 +322,27 @@ html.popup-sempre-aberto {
     justify-content: flex-start;
     padding-top: 34vh;
   }
+}
+
+/* ------------------------------------------------------- letra miúda */
+
+/* Mesmo jeito dos links do rodapé da institucional ("Termos de uso"):
+   pequeno, cinza claro e sublinhado. */
+.popup-sempre__rodape {
+  font-size: 14px;
+}
+
+.popup-sempre__rodape a {
+  color: #c4c4c4;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.45);
+  text-underline-offset: 4px;
+  transition: color 0.2s ease;
+}
+
+.popup-sempre__rodape a:hover {
+  color: var(--paper);
+  text-decoration-color: currentColor;
 }
 
 /* ---------------------------------------------------------------- celular */
@@ -364,8 +396,7 @@ html.popup-sempre-aberto {
   }
 
   .popup-sempre__acoes .btn {
-    flex: 1 1 100%;
-    padding-inline: 16px;
+    flex-basis: 100%;
   }
 }
 
