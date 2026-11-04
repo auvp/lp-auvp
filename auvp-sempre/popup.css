@@ -330,6 +330,7 @@ html.popup-sempre-aberto {
    pequeno, cinza claro e sublinhado. */
 .popup-sempre__rodape {
   font-size: 14px;
+  color: #a8a8a8;
 }
 
 .popup-sempre__rodape a {
