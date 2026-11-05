@@ -11,6 +11,8 @@ import { comUtm } from "@/lib/utm";
 export const site = {
   name: "AUVP",
   legalName: "AUVP Educação Financeira",
+  razaoSocial: "DO NOT SCARE SOLUÇÕES INTERATIVAS LTDA",
+  cnpj: "38.099.091/0001-37",
   shortName: "AUVP Escola de Investimentos",
   tagline: "A maior escola de investimentos do Brasil",
   description:
@@ -58,6 +60,8 @@ export const links = {
   whatsapp: "https://sard.ink/leadduvida",
   terms: "../termos-de-uso/",
   privacy: "../politica-de-privacidade/",
+  /** Canal único do grupo: mesmo texto e mesma URL em todos os sites. */
+  reportChannel: "https://auvp.canaldenuncias.com.br/",
   instagram: "https://www.instagram.com/auvpcapital",
   youtube: "https://www.youtube.com/@AUVPCapital",
   spotify:

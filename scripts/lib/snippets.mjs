@@ -9,6 +9,7 @@ const snippetsDir = resolve(
   "snippets",
 );
 const MARCA = 'data-snippet="versao-pagina"';
+const MARCA_UTM = 'data-snippet="utm"';
 
 // b.html é a variante B de um teste; qualquer outra página é a A (ou a única versão).
 export function versaoDe(arquivo) {
@@ -21,7 +22,8 @@ export function injectHtml(html, versao) {
     resolve(snippetsDir, "versao-pagina.js"),
     "utf8",
   ).replace(/(["'])__VERSAO__\1/, (_, aspas) => `${aspas}${versao}${aspas}`);
-  const tag = `<script ${MARCA}>${codigo}</script>`;
+  const utm = readFileSync(resolve(snippetsDir, "utm.js"), "utf8");
+  const tag = `<script ${MARCA}>${codigo}</script><script ${MARCA_UTM}>${utm}</script>`;
   return html.includes("</body>")
     ? html.replace("</body>", () => `${tag}</body>`)
     : html + tag;
