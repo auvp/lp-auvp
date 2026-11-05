@@ -8,7 +8,7 @@ import { injectHtml, versaoDe } from "./lib/snippets.mjs";
 function rodar(hrefs, versao = "b") {
   const html = injectHtml("<html><body></body></html>", versao);
   const codigo = html.match(
-    /<script data-snippet="versao-pagina">([\s\S]*)<\/script>/,
+    /<script data-snippet="versao-pagina">([\s\S]*?)<\/script>/,
   )[1];
   const links = hrefs.map((h) => ({
     h,
@@ -131,7 +131,7 @@ test("o código-fonte do snippet não usa sintaxe fora de ES5 (roda em navegador
 test("link <a> criado depois entra na varredura (o próprio nó, não só descendentes)", () => {
   const html = injectHtml("<body></body>", "b");
   const codigo = html.match(
-    /<script data-snippet="versao-pagina">([\s\S]*)<\/script>/,
+    /<script data-snippet="versao-pagina">([\s\S]*?)<\/script>/,
   )[1];
   let observador;
   const novo = {
@@ -161,4 +161,92 @@ test("link <a> criado depois entra na varredura (o próprio nó, não só descen
   });
   observador([{ type: "childList", addedNodes: [novo] }]);
   assert.equal(novo.h, "https://form.auvp.com.br/to/x?versao_pagina=b");
+});
+
+// Executa o snippet de UTMs numa página falsa, com URL e sessionStorage próprios.
+function rodarUtm({ busca = "", guardadas = null, hrefs = [] } = {}) {
+  const html = injectHtml("<body></body>", "a");
+  const codigo = html.match(
+    /<script data-snippet="utm">([\s\S]*?)<\/script>/,
+  )[1];
+  const links = hrefs.map((h) => ({
+    h,
+    getAttribute() {
+      return this.h;
+    },
+    setAttribute(_, v) {
+      this.h = v;
+    },
+  }));
+  const armazem = guardadas ? { auvp_utms: JSON.stringify(guardadas) } : {};
+  vm.runInNewContext(codigo, {
+    URL,
+    URLSearchParams,
+    JSON,
+    encodeURIComponent,
+    location: {
+      href: "https://www.auvp.com.br/escola/" + busca,
+      hostname: "www.auvp.com.br",
+      search: busca,
+    },
+    sessionStorage: {
+      getItem: (k) => armazem[k] ?? null,
+      setItem: (k, v) => {
+        armazem[k] = v;
+      },
+    },
+    document: { documentElement: {}, querySelectorAll: () => links },
+    MutationObserver: class {
+      observe() {}
+    },
+  });
+  return { hrefs: links.map((l) => l.h), armazem };
+}
+
+test("UTMs da URL vão para links internos e de checkout e ficam guardadas", () => {
+  const { hrefs, armazem } = rodarUtm({
+    busca: "?utm_source=g&utm_campaign=c&outro=1",
+    hrefs: ["../termos-de-uso/", "https://form.auvp.com.br/to/x#a"],
+  });
+  assert.deepEqual(hrefs, [
+    "../termos-de-uso/?utm_source=g&utm_campaign=c",
+    "https://form.auvp.com.br/to/x?utm_source=g&utm_campaign=c#a",
+  ]);
+  assert.equal(armazem.auvp_utms, '{"utm_source":"g","utm_campaign":"c"}');
+});
+
+test("sem UTM na URL, usa as guardadas; UTMs novas substituem as guardadas", () => {
+  const guardadas = { utm_source: "antiga", utm_term: "t" };
+  assert.deepEqual(rodarUtm({ guardadas, hrefs: ["/x"] }).hrefs, [
+    "/x?utm_source=antiga&utm_term=t",
+  ]);
+  assert.deepEqual(
+    rodarUtm({ busca: "?utm_source=nova", guardadas, hrefs: ["/x"] }).hrefs,
+    ["/x?utm_source=nova"],
+  );
+});
+
+test("não sobrescreve parâmetro que o link já tem", () => {
+  assert.deepEqual(
+    rodarUtm({
+      busca: "?utm_source=g&utm_medium=m",
+      hrefs: ["https://form.auvp.com.br/to/x?utm_source=fixo"],
+    }).hrefs,
+    ["https://form.auvp.com.br/to/x?utm_source=fixo&utm_medium=m"],
+  );
+});
+
+test("não leva UTMs a outros produtos, ao canal, a âncoras nem a arquivos", () => {
+  const intactos = [
+    "https://auvpcapital.com.br/wealth",
+    "https://analitica.auvp.com.br/",
+    "https://auvp.canaldenuncias.com.br/",
+    "#topo",
+    "mailto:a@b.com",
+    "https://www.auvp.com.br/doc.pdf",
+  ];
+  assert.deepEqual(
+    rodarUtm({ busca: "?utm_source=g", hrefs: intactos }).hrefs,
+    intactos,
+  );
 });

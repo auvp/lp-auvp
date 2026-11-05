@@ -107,6 +107,17 @@ export function SiteFooter() {
             >
               Política de privacidade
             </a>
+            <a
+              href={links.reportChannel}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-paper underline underline-offset-4 transition-colors duration-300"
+            >
+              Canal de Denúncias
+            </a>
+            <p>
+              {site.razaoSocial} · CNPJ: {site.cnpj}
+            </p>
           </div>
           <p className="max-w-[62ch] leading-relaxed">
             Conteúdo de caráter educacional. A AUVP não realiza recomendação
