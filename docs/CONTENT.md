@@ -65,29 +65,31 @@ ausente, e âncora sem destino ainda por cima entra no caminho do Tab.
 
 ### Abrir uma turma nova
 
-`institucional/src/content/closing.ts`, bloco `countdown`. São dois campos, e **os dois andam
-juntos**: turma nova tem número novo e data nova.
+Edite os dados no singleton `LP_AUVP` do **Directus**. O webhook existente
+avisa o n8n, que consulta os dados atuais e atualiza `dados/turma.json` na
+`main` de `auvp/lp-auvp`. O commit aciona o deploy existente das duas páginas.
+Eventos repetidos não criam commits se os três valores continuarem iguais.
 
-```ts
-countdown: {
-  target: "2026-11-14T23:59:00-03:00",
-  turma: "126",
-},
+```json
+{
+  "proxima_turma": "2026-11-29T19:00:00-03:00",
+  "numero_alunos": 65269,
+  "numero_turma": 63
+}
 ```
 
-`target` é o instante em que as inscrições encerram, em ISO **com o fuso
-explícito**: sem o `-03:00` o navegador interpreta a data no fuso de quem
-acessa, e quem estiver fora do Brasil vê o prazo errado.
+`proxima_turma` é o início da turma, com fuso explícito. Datas recebidas do
+Directus sem fuso são tratadas como horário de Brasília (`-03:00`).
+`numero_turma` precisa ser inteiro positivo; `numero_alunos`, inteiro não negativo.
+Valores inválidos interrompem a atualização e o build, conservando o site publicado.
 
-`turma` é como ela se chama, e entra no meio do rótulo: "Inscrições para a
-turma 126 encerram em". Serve qualquer forma que a escola use, `"126"`, `"de
-outubro"`, `"2026.2"`. Com `null`, o rótulo cai no genérico, "Inscrições
-encerram em": prazo sem dono é melhor do que prazo com o nome errado.
+Home e institucional incorporam esse JSON ao build: não consultam o n8n no
+navegador. O institucional também usa `numero_alunos` no indicador de investidores
+formados. Seu contador desaparece quando a data passa; o da home para em zero.
 
-**Data vencida, ou `target: null`, faz a contagem desaparecer**, e a dobra
-segue de pé sem ela. É de propósito, e é a única proteção contra o
-esquecimento: contagem parada em zero numa página institucional é pior do que
-contagem nenhuma.
+Em emergência, edite o mesmo JSON por PR. A próxima alteração no Directus
+volta a sincronizar os valores. Confira as execuções do n8n e o deploy do GitHub
+antes de considerar uma atualização publicada. A alteração só aparece após o deploy.
 
 ### Adicionar uma pergunta ao FAQ
 

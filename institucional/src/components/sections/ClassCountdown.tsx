@@ -4,9 +4,8 @@ import { closing } from "@/content/closing";
 /**
  * Contagem regressiva para o início da próxima turma.
  *
- * A data e o número da turma vêm do mesmo webhook do contador da LP da Escola
- * (`closing.countdown.source`), com a reserva de `content/closing.ts` enquanto
- * ele não responde ou se ele falhar.
+ * A data e o número da turma vêm de `dados/turma.json`, compartilhado com a
+ * LP da Escola e incorporado ao build. O navegador só atualiza o relógio.
  *
  * É a única contagem regressiva da página, e existe porque conta um prazo que
  * existe de verdade: a turma tem data. `docs/BRAND.md` continua proibindo a
@@ -65,48 +64,6 @@ function rotulo(turma: string | null) {
   return turma ? `A turma ${turma} começa em` : "A próxima turma começa em";
 }
 
-type Turma = { alvo: number; turma: string | null };
-
-/** A data do webhook vem sem fuso; sem fuso, ela é horário de Brasília. */
-function lerData(bruto: string): number {
-  const temFuso = /(?:Z|[+-]\d{2}:?\d{2})$/.test(bruto);
-  return Date.parse(temFuso ? bruto : `${bruto}-03:00`);
-}
-
-/** A turma de reserva, escrita em `content/closing.ts`. */
-function reserva(): Turma {
-  const bruto = closing.countdown.target;
-  return {
-    alvo: bruto ? lerData(bruto) : Number.NaN,
-    turma: closing.countdown.turma,
-  };
-}
-
-/**
- * Busca a próxima turma no mesmo webhook da LP da Escola. Qualquer falha
- * (rede, formato, data inválida) devolve `null`, e o componente fica com a
- * reserva do conteúdo.
- */
-async function buscarTurma(url: string, signal: AbortSignal) {
-  try {
-    const resposta = await fetch(url, { cache: "no-store", signal });
-    if (!resposta.ok) return null;
-    const dados: unknown = await resposta.json();
-    if (!dados || typeof dados !== "object") return null;
-    const { proxima_turma, numero_turma } = dados as Record<string, unknown>;
-    if (typeof proxima_turma !== "string") return null;
-    const alvo = lerData(proxima_turma);
-    if (!Number.isFinite(alvo)) return null;
-    const turma =
-      typeof numero_turma === "number" || typeof numero_turma === "string"
-        ? String(numero_turma)
-        : null;
-    return { alvo, turma } satisfies Turma;
-  } catch {
-    return null;
-  }
-}
-
 const dataPorExtenso = new Intl.DateTimeFormat("pt-BR", {
   dateStyle: "long",
   timeStyle: "short",
@@ -114,18 +71,8 @@ const dataPorExtenso = new Intl.DateTimeFormat("pt-BR", {
 });
 
 export function ClassCountdown() {
-  const [dados, setDados] = useState<Turma>(reserva);
-  const { alvo, turma } = dados;
-
-  useEffect(() => {
-    const url = closing.countdown.source;
-    if (!url) return;
-    const controle = new AbortController();
-    buscarTurma(url, controle.signal).then((viva) => {
-      if (viva) setDados(viva);
-    });
-    return () => controle.abort();
-  }, []);
+  const alvo = Date.parse(closing.countdown.target);
+  const turma = closing.countdown.turma;
 
   const [estado, setEstado] = useState<{
     restante: Restante;

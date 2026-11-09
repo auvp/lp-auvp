@@ -43,6 +43,7 @@ import process from "node:process";
 import { injectDir } from "./lib/snippets.mjs";
 import { arquivosSeo } from "./lib/seo.mjs";
 import { verificarOrfas } from "./lib/tipografia.mjs";
+import { validarTurma } from "./lib/turma.mjs";
 import {
   canonical,
   validarExperimentos,
@@ -51,6 +52,11 @@ import {
 
 const root = path.resolve(import.meta.dirname, "..");
 const dist = path.join(root, "dist");
+
+// Rejeita dados incorretos antes de substituir o último build local.
+validarTurma(
+  JSON.parse(await readFile(path.join(root, "dados/turma.json"), "utf8")),
+);
 
 // A action `configure-pages` devolve "/" quando o site fica na raiz.
 const base = (process.env.SITE_BASE_PATH ?? "").replace(/\/+$/, "");
