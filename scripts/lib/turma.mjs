@@ -1,4 +1,4 @@
-/** Contrato compartilhado pelo build e pela atualização do n8n. */
+/** Valida os dados de turma incorporados ao build. */
 export function validarTurma(dados) {
   if (!dados || typeof dados !== "object" || Array.isArray(dados)) {
     throw new Error("Dados de turma inválidos.");
@@ -36,18 +36,6 @@ export function validarTurma(dados) {
     throw new Error("numero_alunos precisa ser um inteiro não negativo.");
   }
   return { proxima_turma, numero_alunos, numero_turma };
-}
-
-/** Datas sem fuso no Directus representam o horário de Brasília. */
-export function normalizarTurma(dados) {
-  const data = dados?.proxima_turma;
-  return validarTurma({
-    ...dados,
-    proxima_turma:
-      typeof data === "string" && !/(Z|[+-]\d{2}:\d{2})$/.test(data)
-        ? `${data}-03:00`
-        : data,
-  });
 }
 
 /** Preenche somente elementos de texto marcados para os dados de turma. */

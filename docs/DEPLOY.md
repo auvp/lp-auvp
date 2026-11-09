@@ -111,49 +111,6 @@ servidor para isso, e todo mundo vê a versão A. Ver [AB-TESTING.md](AB-TESTING
 
 ## AWS (S3 + CloudFront)
 
-### Atualização automática da turma
-
-O workflow `[LP AUVP] Dados dinâmicos` recebe o webhook já configurado no
-Directus, apaga o cache existente e executa:
-
-1. Lê `dados/turma.json` na `main` de `auvp/lp-auvp`, com seu SHA.
-2. Consulta o webhook de turma com `strict=1`, que ignora cache e fallback.
-3. Valida os três campos e explicita o fuso de Brasília quando ausente.
-4. Compara os valores; se não mudaram, encerra sem commit.
-5. Grava somente esse JSON pela GitHub Contents API, usando o SHA lido.
-6. Em conflito HTTP 409, relê GitHub e Directus e tenta novamente, no máximo
-   três vezes. Outras falhas interrompem a execução.
-
-O commit `conteudo: atualiza dados da turma N` dispara os workflows existentes.
-Não é necessário outro workflow GitHub nem acesso à AWS pelo n8n. O token do
-n8n precisa de acesso a `auvp/lp-auvp` com **Contents: read and write** e
-permissão de gravar na `main` conforme as regras do repositório. Não use
-`GITHUB_TOKEN` para essa gravação: eventos desse token não disparam os workflows
-de push ([documentação do GitHub](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow)).
-Use o token externo da credencial **GitHub Actions - LP AUVP**.
-
-**Ativação inicial:** o ajuste foi preparado no rascunho do workflow
-`MSbDSBuQm7T2Ixpw`. Publicar somente depois de o JSON e seus consumidores
-estarem na `main` e de o deploy passar. No nó **Atualizar JSON da turma no GitHub**,
-selecione a credencial **GitHub Actions - LP AUVP**: o conector MCP recusou a
-atribuição da credencial genérica (`httpBearerAuth`). Confirme também a mesma
-credencial no nó **Ler JSON da turma no GitHub**, reaproveitado do disparo antigo.
-As simulações com pin data não verificam token, permissão de branch nem deploy.
-
-O UUID do webhook GET de turma também foi alterado no rascunho, junto com a
-consulta interna estrita. A versão ativa mantém o endereço anterior até o site
-estático estar publicado; assim as páginas atuais continuam funcionando durante
-a transição. Ao publicar o rascunho, confirmar que o endereço anterior retorna
-404 e o novo retorna os dados reais. O webhook POST recebido do Directus é outro
-endpoint e continua configurado como antes.
-
-O novo endereço GET fica somente no n8n. `scripts/n8n/turma-workflow.mjs` gera
-os nós e o SDK para validação recebendo esse endereço como argumento; ele não
-deve ser incluído no Git. As funções embutidas nos Code nodes são as mesmas
-cobertas por `scripts/turma-commit.test.mjs`.
-
-### Infraestrutura e publicação
-
 Terceiro destino do mesmo `dist/`, ao lado do Pages e da Vercel (nenhum dos dois
 muda). Publicado pelo workflow `.github/workflows/deploy-aws.yml` a cada push na
 `main`, no bucket `lp-auvp` (já existente) com uma distribuição CloudFront na
