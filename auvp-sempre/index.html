@@ -433,8 +433,11 @@
             </p>
           </header>
 
-          <!-- Os dois planos levam ao WhatsApp do time (pedido de 04/11/2026), no
-               lugar do checkout direto. Os ids "mensal" e "anual" ficam para o
+          <!-- Os dois planos passam pelo hub (SEMPRE - F01): login no SSO e
+               verificação no ID Center. Ex-aluno da Escola vai ao checkout; não
+               aluno, ou verificação sem resposta, vai a /auvp-sempre/popup/.
+               O link não leva UTM fixa: as da visita entram pelo snippet de UTMs
+               e seguem até o checkout. Os ids "mensal" e "anual" ficam para o
                GTM saber qual botão foi clicado. -->
           <div class="plan-grid">
             <article class="plan" aria-labelledby="plano-mensal">
@@ -456,7 +459,7 @@
                 <a
                   class="btn btn--dark btn--block"
                   id="mensal"
-                  href="https://api.whatsapp.com/send/?phone=556234139882&amp;text=Gostaria+de+mais+informa%C3%A7%C3%B5es+sobre+a+AUVP+Sempre"
+                  href="https://hub-api.auvp.com.br/api/auth/sempre"
                   >ASSINAR O PLANO MENSAL</a
                 >
                 <p class="plan__note">
@@ -491,7 +494,7 @@
                 <a
                   class="btn btn--dark btn--block"
                   id="anual"
-                  href="https://api.whatsapp.com/send/?phone=556234139882&amp;text=Gostaria+de+mais+informa%C3%A7%C3%B5es+sobre+a+AUVP+Sempre"
+                  href="https://hub-api.auvp.com.br/api/auth/sempre"
                   >ASSINAR O PLANO ANUAL</a
                 >
                 <p class="plan__note">

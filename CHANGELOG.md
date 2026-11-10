@@ -4,6 +4,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
 ## [Não publicado]
 
+### AUVP Sempre só para ex-aluno (nov/2026)
+
+- **Botões de plano da `/auvp-sempre/`**: mensal e anual saem do WhatsApp e
+  passam pelo hub (`hub-api.auvp.com.br/api/auth/sempre`). Ele faz o login no
+  SSO e consulta o ID Center: ex-aluno da Escola vai ao checkout, e não aluno
+  vai a `/auvp-sempre/popup/`. O link não tem UTM fixa.
+- **UTMs**: o `hub-api.auvp.com.br` entrou na lista de hosts do snippet de
+  UTMs, então as UTMs da visita seguem até o checkout.
+
 ### Sem palavra órfã (nov/2026)
 
 - **Regra do repositório:** títulos com `text-wrap: balance` e texto corrido
