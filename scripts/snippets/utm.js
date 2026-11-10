@@ -8,6 +8,7 @@
     "auvp.com.br",
     "form.auvp.com.br",
     "checkout.auvp.com.br",
+    "hub-api.auvp.com.br",
     "clkdmg.site",
   ];
   var ARQUIVO = /\.(pdf|png|jpe?g|webp|svg|zip)$/i;
