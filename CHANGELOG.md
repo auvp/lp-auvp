@@ -4,6 +4,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
 ## [Não publicado]
 
+### Ícones de app no padrão do DS (nov/2026)
+
+- **Atalho de tela inicial**: todas as páginas usam o pacote de ícones da AUVP
+  Escola (olho amarelo em fundo `#0A0A0A`): `favicon.ico`, `favicon.svg`,
+  `apple-touch-icon.png` (180), `icon-192`/`icon-512` e `site.webmanifest`, na
+  raiz do site. A LP da Escola e o institucional, que não tinham ícone,
+  passaram a ter. Saem os `favicon.png` antigos de `comum/img/` e
+  `auvp-sempre/img/`.
+
 ### AUVP Sempre só para ex-aluno (nov/2026)
 
 - **Botões de plano da `/auvp-sempre/`**: mensal e anual saem do WhatsApp e
