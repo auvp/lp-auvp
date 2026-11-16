@@ -12,8 +12,9 @@
  *   qual ponto da página a pessoa foi barrada.
  * - Abre sempre que a pessoa chega a um gatilho, inclusive depois de
  *   recarregar a página.
- * - `data-popup-sempre-auto` no <dialog> abre assim que a página carrega. Só a
- *   prévia (/auvp-sempre/popup/) usa.
+ * - `data-popup-sempre-auto` no <dialog> abre assim que a página carrega. Usam
+ *   a prévia (/auvp-sempre/popup/) e a tela de quem já assina
+ *   (/auvp-sempre/ja-assinante/), que passa "ja-assinante" como gatilho.
  *
  * Eventos no dataLayer: popup_sempre_aberto e popup_sempre_clique (com
  * `popup_cta`), os dois com `popup_gatilho`.
@@ -181,7 +182,8 @@
   });
 
   if (dialog.hasAttribute("data-popup-sempre-auto")) {
-    abrir("previa");
+    // O valor do atributo vira o gatilho (ex.: "ja-assinante"); vazio é a prévia.
+    abrir(dialog.getAttribute("data-popup-sempre-auto") || "previa");
     return;
   }
 

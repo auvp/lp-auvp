@@ -4,6 +4,15 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
 ## [Não publicado]
 
+### AUVP Sempre: tela para quem já assina (nov/2026)
+
+- **`/auvp-sempre/ja-assinante/`**: aviso "Você já tem acesso a esses
+  benefícios", no mesmo formato do popup de não aluno, com botão para a Minha
+  AUVP e suporte pelo WhatsApp. É o destino do hub para quem já tem a Sempre
+  ativa e clica para assinar de novo (o desvio é configurado no hub).
+- **`popup.js`**: o valor de `data-popup-sempre-auto` vira o gatilho enviado
+  ao dataLayer (`ja-assinante` nesta tela; `previa` quando vazio).
+
 ### Teste A/B Escola x institucional, 2ª rodada (nov/2026)
 
 - **Teste `escola-institucional-2`** em `/`, 50/50: a LP da Escola (A) contra a
