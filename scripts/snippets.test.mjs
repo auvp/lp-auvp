@@ -5,7 +5,8 @@ import { readFileSync } from "node:fs";
 import { injectHtml, versaoDe } from "./lib/snippets.mjs";
 
 // Executa o script injetado numa página falsa e devolve os hrefs depois da varredura.
-function rodar(hrefs, versao = "b") {
+// `tela.celular` simula o matchMedia do layout de celular; dá para trocar depois.
+function rodar(hrefs, versao = "b", tela = { celular: false }) {
   const html = injectHtml("<html><body></body></html>", versao);
   const codigo = html.match(
     /<script data-snippet="versao-pagina">([\s\S]*?)<\/script>/,
@@ -18,27 +19,74 @@ function rodar(hrefs, versao = "b") {
     setAttribute(_, v) {
       this.h = v;
     },
+    closest() {
+      return this;
+    },
   }));
   const aberturas = [];
-  const janela = { open: (...args) => aberturas.push(args) };
+  const ouvintes = {};
+  const janela = {
+    open: (...args) => aberturas.push(args),
+    matchMedia: (q) => ({
+      matches: q === "(max-width: 767px)" && tela.celular,
+    }),
+  };
   const contexto = {
     URL,
     RegExp,
     location: { href: "https://auvp.com.br/auvp-sempre/" },
-    document: { documentElement: {}, querySelectorAll: () => links },
+    document: {
+      documentElement: {},
+      querySelectorAll: () => links,
+      addEventListener: (tipo, fn) => {
+        ouvintes[tipo] = fn;
+      },
+    },
     MutationObserver: class {
       observe() {}
     },
     window: janela,
   };
   vm.runInNewContext(codigo, contexto);
-  return { hrefs: links.map((l) => l.h), janela, aberturas };
+  const clicar = (i) => ouvintes.click({ target: links[i] });
+  return { hrefs: links.map((l) => l.h), links, janela, aberturas, clicar };
 }
 
 test("acrescenta versao_pagina em link do formulário sem query", () => {
   assert.deepEqual(rodar(["https://form.auvp.com.br/to/eDvFy404"]).hrefs, [
-    "https://form.auvp.com.br/to/eDvFy404?versao_pagina=b",
+    "https://form.auvp.com.br/to/eDvFy404?versao_pagina=b_desk",
   ]);
+});
+
+test("no layout de celular o valor termina em _mobile", () => {
+  assert.deepEqual(
+    rodar(["https://form.auvp.com.br/to/x"], "a", { celular: true }).hrefs,
+    ["https://form.auvp.com.br/to/x?versao_pagina=a_mobile"],
+  );
+});
+
+test("no clique o valor acompanha o layout do momento", () => {
+  const tela = { celular: false };
+  const { links, clicar } = rodar(["https://form.auvp.com.br/to/x"], "a", tela);
+  assert.equal(
+    links[0].h,
+    "https://form.auvp.com.br/to/x?versao_pagina=a_desk",
+  );
+  tela.celular = true;
+  clicar(0);
+  assert.equal(
+    links[0].h,
+    "https://form.auvp.com.br/to/x?versao_pagina=a_mobile",
+  );
+});
+
+test("versao_pagina que já veio no link não muda nem no clique", () => {
+  const link = "https://form.auvp.com.br/to/x?versao_pagina=z&x=1";
+  const tela = { celular: false };
+  const { links, clicar } = rodar([link], "a", tela);
+  tela.celular = true;
+  clicar(0);
+  assert.equal(links[0].h, link);
 });
 
 test("preserva a query existente byte a byte e o fragmento", () => {
@@ -46,7 +94,7 @@ test("preserva a query existente byte a byte e o fragmento", () => {
     "https://form.auvp.com.br/to/nrLyZhc6?typeform-source=www.auvp.com.br&utm_term=a%20b#x",
   ]);
   assert.deepEqual(hrefs, [
-    "https://form.auvp.com.br/to/nrLyZhc6?typeform-source=www.auvp.com.br&utm_term=a%20b&versao_pagina=b#x",
+    "https://form.auvp.com.br/to/nrLyZhc6?typeform-source=www.auvp.com.br&utm_term=a%20b&versao_pagina=b_desk#x",
   ]);
 });
 
@@ -62,8 +110,8 @@ test("trata ? e & no fim da URL", () => {
       "https://form.auvp.com.br/to/a?x=1&",
     ]).hrefs,
     [
-      "https://form.auvp.com.br/to/a?versao_pagina=b",
-      "https://form.auvp.com.br/to/a?x=1&versao_pagina=b",
+      "https://form.auvp.com.br/to/a?versao_pagina=b_desk",
+      "https://form.auvp.com.br/to/a?x=1&versao_pagina=b_desk",
     ],
   );
 });
@@ -82,7 +130,7 @@ test("ignora outros domínios, relativos, âncoras e domínios parecidos", () =>
 
 test("link com // (mesmo protocolo) também recebe", () => {
   assert.deepEqual(rodar(["//form.auvp.com.br/to/a"]).hrefs, [
-    "//form.auvp.com.br/to/a?versao_pagina=b",
+    "//form.auvp.com.br/to/a?versao_pagina=b_desk",
   ]);
 });
 
@@ -92,7 +140,7 @@ test("window.open para o formulário recebe o parâmetro; outros ficam intactos"
   janela.open("https://outro.com/", "_blank");
   assert.deepEqual(aberturas, [
     [
-      "https://form.auvp.com.br/to/DSo4JgH8?utm_source=x&versao_pagina=a",
+      "https://form.auvp.com.br/to/DSo4JgH8?utm_source=x&versao_pagina=a_desk",
       "_blank",
     ],
     ["https://outro.com/", "_blank"],
@@ -160,7 +208,7 @@ test("link <a> criado depois entra na varredura (o próprio nó, não só descen
     },
   });
   observador([{ type: "childList", addedNodes: [novo] }]);
-  assert.equal(novo.h, "https://form.auvp.com.br/to/x?versao_pagina=b");
+  assert.equal(novo.h, "https://form.auvp.com.br/to/x?versao_pagina=b_desk");
 });
 
 // Executa o snippet de UTMs numa página falsa, com URL e sessionStorage próprios.
