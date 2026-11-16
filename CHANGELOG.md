@@ -4,6 +4,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
 ## [Não publicado]
 
+### `versao_pagina` com o layout (nov/2026)
+
+- **Valores novos**: o `versao_pagina` dos links do formulário passa de `a`/`b`
+  para `a_desk`, `a_mobile`, `b_desk` e `b_mobile`. O layout vem da largura da
+  tela (abaixo de 768px é `mobile`) e é conferido de novo no clique. Quem lê
+  esse campo no formulário e nos relatórios precisa aceitar os quatro valores.
+
 ### Ícones de app no padrão do DS (nov/2026)
 
 - **Atalho de tela inicial**: todas as páginas usam o pacote de ícones da AUVP
