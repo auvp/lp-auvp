@@ -4,6 +4,16 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
 ## [Não publicado]
 
+### Teste A/B Escola x institucional, 2ª rodada (nov/2026)
+
+- **Teste `escola-institucional-2`** em `/`, 50/50: a LP da Escola (A) contra a
+  institucional (B). Id novo para separar os dados da 1ª rodada (cookie
+  `ab_escola-institucional-2`).
+- **Institucional (rodada pedida pelo Raul)**: botão da primeira dobra no verde
+  da LP da Escola, foto do Raul no púlpito no lugar da plateia (começando
+  abaixo da barra fixa, para o menu não cobrir o rosto) e headline "Aprenda a
+  investir no Brasil e no mundo" / "Do 0 a investidor em 8 semanas".
+
 ### `versao_pagina` com o layout (nov/2026)
 
 - **Valores novos**: o `versao_pagina` dos links do formulário passa de `a`/`b`

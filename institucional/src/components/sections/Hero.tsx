@@ -50,7 +50,10 @@ export function Hero() {
                distribuída de ponta a ponta, sem um sujeito único: em retrato,
                onde a foto escala pela altura e sobra corte lateral, o que
                sobra em tela continua sendo plateia. */
-            className="absolute inset-0 h-full w-full object-cover object-center"
+            /* Foto do Raul (rodada de testes): a cabeça fica rente ao topo do
+               quadro, então a foto começa abaixo dos 96px da barra fixa e
+               ancora no alto, para o menu não cobrir o rosto. */
+            className="absolute inset-x-0 top-24 bottom-0 h-[calc(100%-6rem)] w-full object-cover object-top"
           />
         ) : (
           <BackdropReserve brief={hero.photo.brief} />
@@ -112,7 +115,14 @@ export function Hero() {
             <p className="text-mist max-w-[48rem] text-sm leading-relaxed md:text-base">
               {hero.support}
             </p>
-            <Button href={links.profileAnalysis} variant="yellow" size="lg">
+            {/* Rodada de testes: o mesmo verde do .auvp-btn-green da LP da
+                Escola (escola/src/style.css), no lugar do amarelo. */}
+            <Button
+              href={links.profileAnalysis}
+              variant="yellow"
+              size="lg"
+              className="bg-[linear-gradient(90deg,#00c642_0%,#00992b_100%)]! text-white! hover:bg-[linear-gradient(90deg,#00b03a_0%,#008024_100%)]!"
+            >
               {hero.ctaLabel}
             </Button>
           </div>

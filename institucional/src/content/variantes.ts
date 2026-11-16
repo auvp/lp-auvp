@@ -38,6 +38,10 @@ export const variantes: Record<
     original: 2000,
     menores: [640, 1024, 1600],
   },
+  "/images/raul-sena-palco-b3.webp": {
+    original: 2000,
+    menores: [640, 1024, 1600],
+  },
   "/images/sede-auvp-capital.webp": {
     original: 1920,
     menores: [640, 1024, 1600],

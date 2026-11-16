@@ -1,3 +1,9 @@
 {
-  "tests": []
+  "tests": [
+    {
+      "id": "escola-institucional-2",
+      "page": "/",
+      "split": { "a": 50, "b": 50 }
+    }
+  ]
 }

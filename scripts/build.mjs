@@ -74,7 +74,11 @@ const siteUrl = (
  * Encerrar um desses testes é apagar a linha daqui e o teste do
  * experiments.json, no mesmo PR.
  */
-const versoesMontadas = {};
+const versoesMontadas = {
+  // Teste "escola-institucional-2" (nov/2026): a LP da Escola (A) contra a
+  // institucional (B), com a rodada do Raul. A 1ª rodada saiu em 04/11/2026.
+  "/": "institucional",
+};
 
 function falhar(titulo, erros) {
   console.error(`\n${titulo}\n${erros.map((e) => `  - ${e}`).join("\n")}\n`);
