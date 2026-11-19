@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Você já tem a AUVP Sempre - AUVP</title>
+    <!-- Destino do hub para quem já tem a AUVP Sempre ativa e clicou para
+         assinar de novo. Fora do índice de busca. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <!-- Ícones de app AUVP (padrão do DS, AUVP Escola). Arquivos na raiz do site. -->
+    <link rel="icon" href="../../favicon.ico" sizes="48x48" />
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+    <link rel="manifest" href="../../site.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="Escola" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@300;400;500;600;700&family=Sora:wght@600&display=swap"
+    />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="../popup.css" />
+    <style>
+      /* A página da AUVP Sempre atrás do popup, como na prévia. */
+      .fundo-sempre {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+    </style>
+    <script src="../popup.js" defer></script>
+  </head>
+  <body>
+    <iframe
+      class="fundo-sempre"
+      src="../"
+      title="Página da AUVP Sempre, atrás do aviso"
+      tabindex="-1"
+    ></iframe>
+
+    <dialog
+      id="popup-sempre"
+      class="popup-sempre"
+      aria-labelledby="popup-sempre-titulo"
+      aria-describedby="popup-sempre-texto"
+      data-popup-sempre-auto="ja-assinante"
+    >
+      <div class="popup-sempre__inner">
+        <div class="popup-sempre__copy" tabindex="-1" autofocus>
+          <p class="popup-sempre__aviso">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="m8 12.5 2.8 2.8L16.5 9.5" />
+            </svg>
+            Assinatura ativa
+          </p>
+          <h1 id="popup-sempre-titulo" class="popup-sempre__title">
+            Você já tem acesso a esses benefícios
+          </h1>
+          <p id="popup-sempre-texto" class="popup-sempre__lead">
+            Sua assinatura da AUVP Sempre está <strong>ativa</strong>, então não
+            é preciso assinar de novo. Tudo o que ela inclui está disponível na
+            Minha AUVP.
+          </p>
+        </div>
+
+        <section
+          class="popup-carrossel"
+          aria-roledescription="carrossel"
+          aria-label="O que a sua assinatura inclui"
+          data-carrossel
+        >
+          <ul
+            class="popup-sempre__pontos popup-carrossel__trilha"
+            role="list"
+            data-carrossel-trilha
+          >
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="13" rx="2" />
+                <path d="m10 9 5 2.5-5 2.5z" />
+                <path d="M8 21h8" />
+              </svg>
+              <p>
+                <strong>+100 aulas</strong>
+                <span>do zero ao avançado</span>
+              </p>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"
+                />
+                <path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5" />
+                <path d="M9 8h7M9 12h5" />
+              </svg>
+              <p>
+                <strong>Materiais didáticos</strong>
+                <span>para estudar e aprender de verdade</span>
+              </p>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="9" cy="8" r="3.2" />
+                <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+                <circle cx="17" cy="9" r="2.6" />
+                <path d="M16.5 14.2c2.6.3 4.5 2.6 4.5 5.3" />
+              </svg>
+              <p>
+                <strong>Comunidade ativa</strong>
+                <span>com especialistas e mais de 35 mil alunos ativos</span>
+              </p>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />
+              </svg>
+              <p>
+                <strong>Ferramentas práticas</strong>
+                <span>para facilitar seu dia a dia de investidor</span>
+              </p>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m12 3 9 5-9 5-9-5z" />
+                <path d="m3 13 9 5 9-5" />
+                <path d="m3 17.5 9 5 9-5" />
+              </svg>
+              <p>
+                <strong>Módulos extras</strong>
+                <span>para ir além na aprendizagem</span>
+              </p>
+            </li>
+          </ul>
+
+          <div class="popup-carrossel__controles">
+            <div class="popup-carrossel__pontos" data-carrossel-pontos></div>
+            <div class="popup-carrossel__setas">
+              <button
+                type="button"
+                aria-label="Tópico anterior"
+                data-carrossel-anterior
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m15 6-6 6 6 6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                aria-label="Próximo tópico"
+                data-carrossel-proximo
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m9 6 6 6-6 6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <div class="popup-sempre__chamada">
+          <p class="popup-sempre__chamada-titulo">Continue de onde parou:</p>
+          <div class="popup-sempre__acoes">
+            <a
+              class="btn popup-sempre__cta"
+              data-popup-cta="minha-auvp"
+              href="https://minha.auvp.com.br/"
+              >ACESSAR A MINHA AUVP</a
+            >
+          </div>
+        </div>
+        <!-- Para quem acha que a assinatura não deveria constar como ativa. -->
+        <p class="popup-sempre__rodape">
+          Ficou com alguma dúvida ou está com algum problema? Contate:
+          <a
+            data-popup-cta="suporte"
+            href="https://api.whatsapp.com/send/?phone=556234139882&amp;text=Ol%C3%A1!%20J%C3%A1%20tenho%20a%20AUVP%20Sempre%20e%20gostaria%20de%20suporte"
+            target="_blank"
+            rel="noopener"
+            >Suporte AUVP</a
+          >
+          ·
+          <!-- Canal de Denúncias: exigido em toda página (relatório de Compliance, 5.1). -->
+          <a
+            data-popup-cta="canal-denuncias"
+            href="https://auvp.canaldenuncias.com.br/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Canal de Denúncias</a
+          >
+        </p>
+      </div>
+    </dialog>
+  </body>
+</html>
