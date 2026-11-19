@@ -12,6 +12,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
   ativa e clica para assinar de novo (o desvio é configurado no hub).
 - **`popup.js`**: o valor de `data-popup-sempre-auto` vira o gatilho enviado
   ao dataLayer (`ja-assinante` nesta tela; `previa` quando vazio).
+- **Canal de Denúncias nos popups**: `/auvp-sempre/popup/` e
+  `/auvp-sempre/ja-assinante/` ganham o link do canal ao lado do suporte, em
+  nova aba (relatório de Compliance, 5.1: canal em todas as páginas).
 
 ### Teste A/B Escola x institucional, 2ª rodada (nov/2026)
 
