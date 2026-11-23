@@ -4,6 +4,13 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
 ## [Não publicado]
 
+### Fim do teste A/B Escola x institucional, 2ª rodada (nov/2026)
+
+- **Teste `escola-institucional-2` encerrado**: `/` volta a mostrar só a LP da
+  Escola, e o `b.html` deixa de ser montado. A página institucional continua
+  em `/institucional/`, com a rodada do Raul. Os links do formulário passam a
+  sair só com `versao_pagina=a_desk` ou `a_mobile`.
+
 ### AUVP Sempre: tela para quem já assina (nov/2026)
 
 - **`/auvp-sempre/ja-assinante/`**: aviso "Você já tem acesso a esses
